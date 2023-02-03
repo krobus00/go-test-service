@@ -21,7 +21,7 @@ make run server
 ### Worker service (example)
 
 ```bash
-docker run --name go-test-service-worker go-test-service /app/go-test-service server
+docker run --name go-test-service-worker go-test-service /app/go-test-service worker
 ```
 
 ```bash
