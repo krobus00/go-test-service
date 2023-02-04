@@ -29,7 +29,7 @@ pipeline {
 				withEnv(["PATH+GO=${GOPATH}/bin"]){
 					// Output will be something like "go version go1.19 darwin/arm64"
 					sh 'go version'
-					sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
+					sh 'curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin'
 					sh 'make lint'
 				}				
                 
