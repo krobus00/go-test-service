@@ -25,6 +25,7 @@ pipeline {
 			}
 		}
 		stage('Code Analysis') {
+            // 
 			agent {
                 docker {
                     image 'golangci/golangci-lint:v1.46.2'
