@@ -11,6 +11,7 @@ pipeline {
     stages {
 		stage('Checkout') {
 			steps {
+				sh "ls -lar"
 				checkout([
 					$class: 'GitSCM',
 					branches: [[name: '*/${GIT_BRANCH}']],
