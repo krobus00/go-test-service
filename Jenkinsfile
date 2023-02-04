@@ -39,7 +39,7 @@ pipeline {
         }
 		stage("Build Image") {
             steps {
-                sh 'docker build . -t krobus00/go-test-service'
+                sh 'docker build . -t krobus00/go-test-service test'
             }
         }
         // stage('deliver') {
