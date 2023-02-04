@@ -12,4 +12,4 @@
 // check lg  update
 // install go 1.18
 // checkoutasdasd
-// add git url
+// add git url aa
