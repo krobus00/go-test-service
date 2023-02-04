@@ -29,6 +29,7 @@ pipeline {
 				
                 sh 'go version'
                 sh 'curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin'
+                sh 'cp $HOME/bin/golangci-lint $(go env GOPATH)/bin/'
                 sh 'make lint'
 								
                 
