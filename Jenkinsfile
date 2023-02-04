@@ -34,7 +34,7 @@ pipeline {
 		}
         stage("Unit Test") {
             steps {
-                sh 'make test dddd'
+                sh 'make test qqq'
             }
         }
     }
