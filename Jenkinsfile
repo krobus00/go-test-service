@@ -28,7 +28,7 @@ pipeline {
 		}
 		stage('Code Analysis') {
 			steps {
-				withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+				withEnv(["PATH+GO=${GOPATH}/bin"]){
 					// Output will be something like "go version go1.19 darwin/arm64"
 					sh 'go version'
 					sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
