@@ -11,3 +11,4 @@
 
 // check lg  update
 // install go 1.18
+// checkout
