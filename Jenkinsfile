@@ -28,9 +28,8 @@ pipeline {
             
 			steps {				
                 sh 'go version'
-                sh 'go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
-                sh 'make lint'
-                
+                sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
+                sh 'make lint'                
             }
 		}
         stage("Unit Test") {
