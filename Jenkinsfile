@@ -24,15 +24,12 @@ pipeline {
 				])
 			}
 		}
-		stage('Code Analysis') {
-            
+		stage('Code Analysis') {            
 			steps {				
-                withEnv(["PATH+GO=${GOPATH}/bin"]){
-                    sh 'go version'
-                    sh 'make version'
+                withEnv(["PATH+GO=${HOME}/go/bin"]){
                     sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
                     sh 'make lint'
-                }         
+                }
             }
 		}
         stage("Unit Test") {
@@ -40,14 +37,11 @@ pipeline {
                 sh 'make test'
             }
         }
-		// stage("build") {
-        //     steps {
-        //         echo 'BUILD EXECUTION STARTED'
-        //         sh 'go version'
-        //         sh 'go get ./...'
-        //         sh 'docker build . -t krobus00/go-test-service'
-        //     }
-        // }
+		stage("Build Image") {
+            steps {
+                sh 'docker build . -t krobus00/go-test-service'
+            }
+        }
         // stage('deliver') {
         //     agent any
         //     steps {

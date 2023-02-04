@@ -7,9 +7,6 @@ cover_args=-cover -coverprofile=cover.out `go list ./...` && go tool cover -html
 tidy:
 	go mod tidy
 
-version:
-	go version
-
 lint:
 	golangci-lint run
 
