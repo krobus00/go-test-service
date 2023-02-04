@@ -29,6 +29,8 @@ pipeline {
 		}
 		stage('Code Analysis') {
 			steps {
+				sh 'which golangci-lint'
+				sh "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2"
 				sh "golangci-lint --version"
 				withEnv(["PATH+GO=${$PATH}/bin:${HOME}/go/bin"]) {
 					sh "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2"
