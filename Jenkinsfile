@@ -10,4 +10,4 @@
 
 
 // check lg  update
-// run pipeline
+// install go 1.18
