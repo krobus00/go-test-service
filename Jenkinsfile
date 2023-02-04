@@ -26,12 +26,11 @@ pipeline {
 		}
 		stage('Code Analysis') {
 			steps {
-				withEnv(["PATH+GO=${GOPATH}/bin"]){
-					// Output will be something like "go version go1.19 darwin/arm64"
-					sh 'go version'
-					sh 'curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin'
-					sh 'make lint'
-				}				
+				
+                sh 'go version'
+                sh 'curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin'
+                sh 'make lint'
+								
                 
             }
 		}
