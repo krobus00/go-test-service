@@ -28,6 +28,7 @@ pipeline {
             
 			steps {				
                 sh 'go version'
+                sh 'make version'                
                 sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
                 sh 'make lint'                
             }
