@@ -27,7 +27,12 @@ pipeline {
 				sh "ls -lar"
 			}
 		}
-        stage("unit-test") {
+		stage("Lint") {
+			echo 'install golangci-lint'
+			sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
+			sh 'make lint'
+		}
+        stage("Unit Test") {
             steps {
                 sh 'make test'
             }
