@@ -10,7 +10,6 @@ pipeline {
     stages {
 		stage('Checkout') {
 			steps {
-				sh "ls -lar"
 				checkout([
 					$class: 'GitSCM',
 					branches: [[name: '*/${GIT_BRANCH}']],
@@ -23,7 +22,6 @@ pipeline {
 					url: 'https://github.com/krobus00/go-test-service.git'
 					]]
 				])
-				sh "ls -lar"
 			}
 		}
 		stage('Code Analysis') {
