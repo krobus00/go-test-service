@@ -27,18 +27,34 @@ pipeline {
 				sh "ls -lar"
 			}
 		}
-		stage('Lint') {
+		stage('Code Analysis') {
 			steps {
-				echo 'install golangci-lint'
-				sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
-				sh 'make lint'
-			}
+                sh 'curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b $GOPATH/bin v1.46.2'
+                sh 'make lint'
+            }
 		}
         stage("Unit Test") {
             steps {
                 sh 'make test'
             }
         }
+		// stage("build") {
+        //     steps {
+        //         echo 'BUILD EXECUTION STARTED'
+        //         sh 'go version'
+        //         sh 'go get ./...'
+        //         sh 'docker build . -t krobus00/go-test-service'
+        //     }
+        // }
+        // stage('deliver') {
+        //     agent any
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
+        //         sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
+        //         sh 'docker push krobus00/go-test-service'
+        //         }
+        //     }
+        // }
     }
 	post {
         always {
