@@ -37,6 +37,20 @@ pipeline {
                 sh 'make test'
             }
         }
+		stage("Build Image") {
+            steps {
+                sh 'docker build . -t krobus00/go-test-service test'
+            }
+        }
+        // stage('deliver') {
+        //     agent any
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
+        //         sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
+        //         sh 'docker push krobus00/go-test-service'
+        //         }
+        //     }
+        // }
     }
 	post {
         always {
