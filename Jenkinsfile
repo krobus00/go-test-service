@@ -15,7 +15,7 @@ pipeline {
 				checkout([
 					$class: 'GitSCM',
 					branches: [[name: '*/${GIT_BRANCH}']],
-					doGenerateSubmoduleConfigurations: false,
+					clean: true,
 					extensions: [],
 					submoduleCfg: [],
 					userRemoteConfigs: [[
