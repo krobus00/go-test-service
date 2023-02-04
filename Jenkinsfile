@@ -28,16 +28,13 @@ pipeline {
 		}
 		stage('Code Analysis') {
 			steps {
-				sh 'echo $HOME'
-				sh 'echo $PATH'
-				sh "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2"
-				sh "golangci-lint --version"
-				withEnv(["PATH+GO=${$PATH}/bin:${HOME}/go/bin"]) {
-					sh "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2"
-					sh "golangci-lint --version"
-				}
-                sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
-                sh 'make lint'
+				withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+					// Output will be something like "go version go1.19 darwin/arm64"
+					sh 'go version'
+					sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
+					sh 'make lint'
+				}				
+                
             }
 		}
         stage("Unit Test") {
