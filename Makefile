@@ -7,6 +7,9 @@ cover_args=-cover -coverprofile=cover.out `go list ./...` && go tool cover -html
 tidy:
 	go mod tidy
 
+lint:
+	golangci-lint run
+
 build:
 	# build binary file
 	go build -ldflags "-s -w" -o go-test-service main.go
