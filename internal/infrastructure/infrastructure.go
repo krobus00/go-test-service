@@ -21,14 +21,18 @@ func (i *Infrastructure) LoadConfig() error {
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
 
-	if err := viper.ReadInConfig(); err != nil {
+	err := viper.ReadInConfig()
+	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			return errors.New("config not found")
 		}
 		return err
 	}
 	newConfig := Config{}
-	viper.Unmarshal(&newConfig)
+	err = viper.Unmarshal(&newConfig)
+	if err != nil {
+		return err
+	}
 	i.Config = &newConfig
 
 	return nil

@@ -62,5 +62,5 @@ func (i *Infrastructure) customHttpHandler(err error, c echo.Context) {
 		}
 	}
 
-	c.JSON(response.StatusCode, response)
+	_ = c.JSON(response.StatusCode, response)
 }
