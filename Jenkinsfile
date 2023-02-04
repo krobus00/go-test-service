@@ -6,6 +6,7 @@ pipeline {
     environment {
         GO114MODULE = 'on'
         CGO_ENABLED = 0 
+        GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
     }
     stages {
 		stage('Checkout') {
@@ -28,7 +29,11 @@ pipeline {
 		}
 		stage('Code Analysis') {
 			steps {
-                sh 'curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b $GOPATH/bin v1.46.2'
+				withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin:${HOME}/go/bin"]) {
+					sh "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2"
+					sh "golangci-lint --version"
+				}
+                sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
                 sh 'make lint'
             }
 		}
