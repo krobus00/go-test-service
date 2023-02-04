@@ -29,7 +29,7 @@ pipeline {
 		}
 		stage('Code Analysis') {
 			steps {
-				withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin:${HOME}/go/bin"]) {
+				withEnv(["PATH+GO=${$PATH}/bin:${HOME}/go/bin"]) {
 					sh "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2"
 					sh "golangci-lint --version"
 				}
