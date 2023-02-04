@@ -27,11 +27,12 @@ pipeline {
 		stage('Code Analysis') {
             
 			steps {				
-                sh 'go version'
-                sh 'make version'
-                            
-                sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
-                sh 'make lint'                
+                withEnv(["PATH+GO=${GOPATH}/bin"]){
+                    sh 'go version'
+                    sh 'make version'
+                    sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
+                    sh 'make lint'
+                }         
             }
 		}
         stage("Unit Test") {
