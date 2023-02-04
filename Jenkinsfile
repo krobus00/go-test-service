@@ -27,7 +27,7 @@ pipeline {
 				sh "ls -lar"
 			}
 		}
-		stage("Lint") {
+		stage('Lint') {
 			steps {
 				echo 'install golangci-lint'
 				sh 'go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
