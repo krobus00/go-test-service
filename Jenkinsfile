@@ -25,30 +25,12 @@ pipeline {
 			}
 		}
 		stage('Code Analysis') {
-            // 
-			agent {
-                docker {
-                    image 'golangci/golangci-lint:v1.46.2'
-                }
-            }
-            steps {
-                // Create our project directory.
-                sh 'cd ${GOPATH}/src'
-                sh 'mkdir -p ${GOPATH}/src/go-test-service'
-                // Copy all files in our Jenkins workspace to our project directory.
-                sh 'cp -r ${WORKSPACE}/* ${GOPATH}/src/go-test-service'
-                sh 'chmod -R 777 ${GOPATH}/src/go-test-service'
-                catchError {
-                    sh 'make lint'
-                }
-            }
-            post {
-                success {
-                    echo 'Static code analysis stage successful'
-                }
-                failure {
-                    error('Build is aborted due to failure of static code analysis stage')
-                }
+            
+			steps {				
+                sh 'go version'
+                sh 'go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2'
+                sh 'make lint'
+                
             }
 		}
         stage("Unit Test") {
