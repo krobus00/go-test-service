@@ -14,6 +14,7 @@ pipeline {
 				checkout([
 					$class: 'GitSCM',
 					branches: [[name: '*/${GIT_BRANCH}']],
+                    credentialsId: 'gh-krobus00',
 					clean: true,
 					extensions: [],
 					submoduleCfg: [],
@@ -40,7 +41,7 @@ pipeline {
         }
         stage("DangerJS Code Review") {
             environment {
-                DANGER_FAKE_CI="myCI"            
+                DANGER_FAKE_CI="YEP"
                 DANGER_TEST_REPO="${params.ghprbGhRepository}"
                 GITHUB_PR_ID="${params.ghprbPullId}"
                 DANGER_TEST_PR="${params.ghprbPullId}"
@@ -48,7 +49,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'api-gh-krobus00', variable: 'DANGER_GITHUB_API_TOKEN')]) {
                     echo ''
-                    sh 'danger ci'
+                    sh 'danger ci --id $ghprbActualCommit'
                 }
             }
         }
