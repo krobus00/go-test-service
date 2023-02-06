@@ -16,5 +16,6 @@ spec:
       - name: go-test
         image: krobus00/go-test-service:latest
         imagePullPolicy: IfNotPresent
+        command: ["/app/go-test-service server"]
         ports:
           - containerPort: 3000
