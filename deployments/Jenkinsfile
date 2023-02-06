@@ -3,6 +3,11 @@ pipeline {
     tools {
         go 'go1.18'
     }
+    environment {
+        GO114MODULE = 'on'
+        CGO_ENABLED = 0
+        DOCKER_IMAGE = "krobus00/go-test-service"
+    }
     parameters {
         gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'BRANCH', type: 'PT_BRANCH_TAG'
         choice(
@@ -10,11 +15,7 @@ pipeline {
             choices: ['staging','production'],            
             description: 'deploy environtment'
         )
-    }
-    environment {
-        GO114MODULE = 'on'
-        CGO_ENABLED = 0
-    }
+    }    
     stages {
 		stage('Checkout') {
 			steps {
@@ -52,16 +53,23 @@ pipeline {
             }
         }
 		stage("Build Image") {
+            environment {
+                DOCKER_TAG="${params.ENV}-$BUILD_NUMBER"
+            }
             steps {
-                sh 'docker build . -t krobus00/go-test-service:staging'
+                sh 'docker build . -t $DOCKER_IMAGE:$DOCKER_TAG'
             }
         }
         stage('Push to Docker Hub') {
-            agent any
+            environment {
+                DOCKER_TAG="${params.ENV}-$BUILD_NUMBER"
+            }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dh-krobus00', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
-                sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
-                sh 'docker push krobus00/go-test-service:staging'
+                    sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
+                    sh 'docker push $DOCKER_IMAGE:$DOCKER_TAG'
+                    echo 'remove image'
+                    sh 'docker rmi $DOCKER_IMAGE:$DOCKER_TAG'
                 }
             }
         }
