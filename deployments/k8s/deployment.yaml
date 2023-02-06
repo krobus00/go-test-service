@@ -19,3 +19,11 @@ spec:
         command: ["/app/go-test-service server"]
         ports:
           - containerPort: 3000
+        livenessProbe:           # To check the health of the Pod
+          httpGet:
+            path: /health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
