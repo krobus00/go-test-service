@@ -19,7 +19,7 @@ spec:
         command: ["/app/go-test-service server"]
         ports:
           - containerPort: 3000
-        livenessProbe:           # To check the health of the Pod
+        livenessProbe:
           httpGet:
             path: /health
             port: 3000
@@ -27,3 +27,19 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 15
           timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash", "-c", "sleep 120"]
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0

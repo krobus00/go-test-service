@@ -29,6 +29,10 @@ func (i *Infrastructure) NewRouter() {
 		return c.JSON(http.StatusOK, "OK")
 	})
 
+	e.GET("/readiness", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "OK")
+	})
+
 	i.Router = e
 }
 
