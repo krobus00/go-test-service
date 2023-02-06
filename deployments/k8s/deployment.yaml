@@ -17,4 +17,4 @@ spec:
         image: krobus00/go-test-service:latest
         imagePullPolicy: IfNotPresent
         ports:
-          - containerPort: 9101
+          - containerPort: 3000
