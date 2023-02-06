@@ -1,6 +1,6 @@
 # Go Test Service
 
-test lg 12
+test lg 1222
 ## Build image
 
 ```bash
