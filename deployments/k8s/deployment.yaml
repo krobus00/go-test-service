@@ -13,7 +13,7 @@ spec:
         app: go-test
     spec:
       containers:
-      - name: go-test-service
+      - name: go-test
         image: krobus00/go-test-service:latest
         imagePullPolicy: IfNotPresent
         ports:

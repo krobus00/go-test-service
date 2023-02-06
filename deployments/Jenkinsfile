@@ -84,7 +84,7 @@ pipeline {
                     sh "kubectl create -f ./deployments/k8s/deployment.yaml -n ${params.ENV} || true"
                     sh '''
                     PATCH_TO_DEPLOYMENT={\\"metadata\\":{\\"labels\\":{\\"version\\":\\"${DOCKER_TAG}\\"}},\\"spec\\":{\\"template\\":{\\"metadata\\":{\\"labels\\":{\\"version\\":\\"${DOCKER_TAG}\\"}},\\"spec\\":{\\"containers\\":[{\\"name\\":\\"${DEPLOYMENT_NAME}\\",\\"image\\":\\"${DOCKER_IMAGE}:${DOCKER_TAG}\\"}]}}}}
-                    kubectl patch deployment ${DEPLOYMENT_NAME} -n ${params.ENV} -p $PATCH_TO_DEPLOYMENT
+                    kubectl patch deployment $DEPLOYMENT_NAME -n ${params.ENV} -p $PATCH_TO_DEPLOYMENT
                     '''
                     sh "kubectl apply -f ./deployments/k8s/service.yaml -n ${params.ENV}"
                 }
