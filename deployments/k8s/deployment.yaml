@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-test-service
+  name: go-test
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: go-test-service
+      app: go-test
   template:
     metadata:
       labels:
-        app: go-test-service
+        app: go-test
     spec:
       containers:
       - name: go-test-service
