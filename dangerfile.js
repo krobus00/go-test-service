@@ -4,10 +4,9 @@ const { additions = 0, deletions = 0, title = "" } = danger.github.pr
 
 const getModifiedFiles = () => danger.git.modified_files
 
-const getDiffAdded = (fileName) => {
-	danger.git.diffForFile(fileName).then((res) => {
-		return res.added
-	})
+const getDiffAdded = async (fileName) => {
+	let diff = await danger.git.diffForFile(fileName)
+	return diff.added
 }
 
 const ensurePRHasAssignee = () => {
@@ -31,16 +30,23 @@ const reviewLargePR = () => {
 	}
 }
 
-const checkCommonIssue = () => {
+const checkCommonIssue = async () => {
 	const modifiedFiles = getModifiedFiles()
 	for (modifiedFile of modifiedFiles) {
-		diffAddedForFile = getDiffAdded(modifiedFile) || ''
+		diffAddedForFile = await getDiffAdded(modifiedFile) || ''
 		if (diffAddedForFile.includes('fmt.Print')) {
-			fail('fmt.print detected')
+			fail('fmt.Print detected')
 		}
 	}
 }
-ensurePRHasAssignee()
-reviewLargePR()
-showCodeChanges()
-checkCommonIssue()
+
+(async () => {
+	try {
+		ensurePRHasAssignee()
+		reviewLargePR()
+		showCodeChanges()
+		await checkCommonIssue()
+	} catch (e) {
+		console.log(e)
+	}
+})();
