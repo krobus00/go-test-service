@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         go 'go1.18'
+        nodejs "nodejs18"
     }
     environment {
         GO114MODULE = 'on'
@@ -37,20 +38,20 @@ pipeline {
                 sh 'make test'
             }
         }
-		stage("Build Image") {
+        stage("DangerJS Code Review") {
+            environment {
+                DANGER_FAKE_CI="myCI"            
+                DANGER_TEST_REPO="${params.ghprbGhRepository}"
+                GITHUB_PR_ID="${params.ghprbPullId}"
+                DANGER_TEST_PR="${params.ghprbPullId}"
+            }
             steps {
-                sh 'docker build . -t krobus00/go-test-service test'
+                withCredentials([string(credentialsId: 'api-gh-krobus00', variable: 'DANGER_GITHUB_API_TOKEN')]) {
+                    echo ''
+                    sh 'danger ci'
+                }
             }
         }
-        // stage('deliver') {
-        //     agent any
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
-        //         sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
-        //         sh 'docker push krobus00/go-test-service'
-        //         }
-        //     }
-        // }
     }
 	post {
         always {

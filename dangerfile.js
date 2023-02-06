@@ -1,6 +1,6 @@
-import { warn, message, markdown, danger } from "danger"
+import { warn, message, fail, danger } from "danger"
 
-const { additions = 0, deletions = 0 } = danger.github.pr
+const { additions = 0, deletions = 0, title = "" } = danger.github.pr
 
 const getModifiedFiles = () => danger.git.modified_files
 
@@ -11,6 +11,7 @@ const getDiffAdded = (fileName) => {
 }
 
 const ensurePRHasAssignee = () => {
+	if (title.toLowerCase().includes("hotfix")) return
 	if (danger.github.pr.assignee === null) {
 		fail("Please assign someone to merge this PR, and optionally include people who should review.")
 	}
@@ -35,7 +36,7 @@ const checkCommonIssue = () => {
 	for (modifiedFile of modifiedFiles) {
 		diffAddedForFile = getDiffAdded(modifiedFile) || ''
 		if (diffAddedForFile.includes('fmt.Print')) {
-			warn('fmt.print detected')
+			fail('fmt.print detected')
 		}
 	}
 }
