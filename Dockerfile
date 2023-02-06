@@ -1,6 +1,6 @@
 # builder image
 FROM golang:1.18.1-alpine as base
-
+LABEL stage=builder
 WORKDIR /builder
 RUN apk add upx
 RUN apk add make

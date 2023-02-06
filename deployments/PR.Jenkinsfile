@@ -57,6 +57,7 @@ pipeline {
 	post {
         always {
             cleanWs()
+            sh 'docker image prune --filter label=stage=builder'
         }
     }
 }

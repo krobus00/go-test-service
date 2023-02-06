@@ -3,6 +3,14 @@ pipeline {
     tools {
         go 'go1.18'
     }
+    parameters {
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'BRANCH', type: 'PT_BRANCH_TAG'
+        choice(
+            name: 'ENV',
+            choices: ['staging','production'],            
+            description: 'deploy environtment'
+        )
+    }
     environment {
         GO114MODULE = 'on'
         CGO_ENABLED = 0
@@ -12,18 +20,24 @@ pipeline {
 			steps {
 				checkout([
 					$class: 'GitSCM',
-					branches: [[name: '*/${GIT_BRANCH}']],
+					branches: [[name: '*/${BRANCH}']],
+                    credentialsId: 'gh-krobus00',
 					clean: true,
 					extensions: [],
 					submoduleCfg: [],
 					userRemoteConfigs: [[
-					name: 'origin',
-					refspec: '+refs/pull/${ghprbPullId}/*:refs/remotes/origin/pr/${ghprbPullId}/*',
-					url: '${ghprbAuthorRepoGitUrl}'
+					url: 'https://github.com/krobus00/go-test-service.git'
 					]]
 				])
 			}
 		}
+        stage("Add config files") {
+            steps {
+                configFileProvider([configFile(fileId: "6c88279b-90c0-4e94-8432-cf8892b4871d", targetLocation: 'config.yml')]) {
+                    sh "ls -lar"
+                }
+            }
+        }
 		stage('Code Analysis') {            
 			steps {				
                 withEnv(["PATH+GO=${HOME}/go/bin"]){
@@ -39,22 +53,23 @@ pipeline {
         }
 		stage("Build Image") {
             steps {
-                sh 'docker build . -t krobus00/go-test-service test'
+                sh 'docker build . -t krobus00/go-test-service:staging'
             }
         }
-        // stage('deliver') {
-        //     agent any
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
-        //         sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
-        //         sh 'docker push krobus00/go-test-service'
-        //         }
-        //     }
-        // }
+        stage('Push to Docker Hub') {
+            agent any
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dh-krobus00', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
+                sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
+                sh 'docker push krobus00/go-test-service:staging'
+                }
+            }
+        }
     }
 	post {
         always {
             cleanWs()
+            sh 'docker image prune --filter label=stage=builder'
         }
     }
 }
