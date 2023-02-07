@@ -10,7 +10,7 @@ RUN make tidy
 RUN make build
 
 # runner image
-FROM alpine:3.8
+FROM scratch
 WORKDIR /app
 COPY --from=base /builder/go-test-service go-test-service
 COPY --from=base /builder/config.yml config.yml
