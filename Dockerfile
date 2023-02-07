@@ -1,6 +1,6 @@
 # builder image
 FROM golang:1.18.1-alpine as base
-
+LABEL stage=builder
 WORKDIR /builder
 RUN apk add upx
 RUN apk add make
@@ -10,7 +10,7 @@ RUN make tidy
 RUN make build
 
 # runner image
-FROM alpine:3.8
+FROM scratch
 WORKDIR /app
 COPY --from=base /builder/go-test-service go-test-service
 COPY --from=base /builder/config.yml config.yml

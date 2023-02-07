@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go-test
+  template:
+    metadata:
+      labels:
+        app: go-test
+    spec:
+      containers:
+      - name: go-test
+        image: krobus00/go-test-service:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/app/go-test-service server"]
+        ports:
+          - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash", "-c", "sleep 120"]
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%

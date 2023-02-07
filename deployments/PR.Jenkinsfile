@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         go 'go1.18'
+        nodejs "nodejs18"
     }
     environment {
         GO114MODULE = 'on'
@@ -13,6 +14,7 @@ pipeline {
 				checkout([
 					$class: 'GitSCM',
 					branches: [[name: '*/${GIT_BRANCH}']],
+                    credentialsId: 'gh-krobus00',
 					clean: true,
 					extensions: [],
 					submoduleCfg: [],
@@ -37,10 +39,25 @@ pipeline {
                 sh 'make test'
             }
         }
+        stage("DangerJS Code Review") {
+            environment {
+                DANGER_FAKE_CI="YEP"
+                DANGER_TEST_REPO="${params.ghprbGhRepository}"
+                GITHUB_PR_ID="${params.ghprbPullId}"
+                DANGER_TEST_PR="${params.ghprbPullId}"
+            }
+            steps {
+                withCredentials([string(credentialsId: 'api-gh-krobus00', variable: 'DANGER_GITHUB_API_TOKEN')]) {
+                    echo ''
+                    sh 'danger ci --id $ghprbActualCommit'
+                }
+            }
+        }
     }
 	post {
         always {
             cleanWs()
+            sh 'docker image prune --filter label=stage=builder'
         }
     }
 }
